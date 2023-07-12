@@ -1,5 +1,5 @@
 import {AuthenticationComponent} from '@loopback/authentication';
-import {JWTAuthenticationComponent, UserServiceBindings} from '@loopback/authentication-jwt';
+import {JWTAuthenticationComponent, RefreshTokenServiceBindings, TokenServiceBindings, UserServiceBindings} from '@loopback/authentication-jwt';
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
 import {RepositoryMixin} from '@loopback/repository';
@@ -26,6 +26,16 @@ export class JwtApplication extends BootMixin(
     this.component(JWTAuthenticationComponent);
     // Bind datasource
     this.dataSource(MongoDbDataSource, UserServiceBindings.DATASOURCE_NAME);
+
+    //BIND DATASOURCE FROM REFRESH TOKEN....
+    this.dataSource(MongoDbDataSource, RefreshTokenServiceBindings.DATASOURCE_NAME);
+
+    // BIND FOR ACCESS JWT TOKEN EXPIRES IN....
+    this.bind(TokenServiceBindings.TOKEN_EXPIRES_IN).to('10')
+
+    // BIND FOR REFRESH JWT TOKEN EXPIRES TIME IN.....
+    this.bind(RefreshTokenServiceBindings.REFRESH_EXPIRES_IN).to('60')
+
     // Set up the custom sequence
     this.sequence(MySequence);
 
